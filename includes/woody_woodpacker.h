@@ -14,17 +14,29 @@
 
 # define USAGE "./woody_woodpacker <file_to_pack>"
 
+typedef Elf64_Ehdr elf_ehdr;
+typedef Elf64_Phdr elf_phdr;
+typedef Elf64_Shdr elf_shdr;
+
 typedef struct  s_file
 {
     char            *mapped_file;
-    Elf64_Ehdr      *ehdr;
-    Elf64_Phdr      *phdr;
-    Elf64_Shdr      *shdr;
+    char            *bytecode;
+    elf_ehdr        *ehdr;
+    elf_phdr        *phdr;
+    elf_shdr        *shdr;
+    Elf64_Off       b_offset;
+    Elf64_Off       b_filesz;
 }               t_file;
 
-int     parse_mapped_file(t_file *file);
-void    print_ehdr(t_file *file);
-void    print_phdr(t_file *file);
-void    print_shdr(t_file *file);
+int         parse_elf(t_file *file);
+elf_ehdr    *parse_64ehdr(t_file *file);
+elf_phdr    *parse_64phdr(t_file *file);
+elf_shdr    *parse_64shdr(t_file *file);
+int         parse_bytecode(t_file *file);
+
+void    print_64ehdr(t_file *file);
+void    print_64phdr(t_file *file);
+void    print_64shdr(t_file *file);
 
 #endif

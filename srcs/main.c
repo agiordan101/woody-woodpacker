@@ -25,6 +25,8 @@ char *mmap_file(char *file_name)
 	return (mapped_file);
 }
 
+
+
 int main(int argc, char **argv)
 {
 	t_file	file;
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	file.mapped_file = mmap_file(argv[1]);
-	if (!parse_mapped_file(&file))
+	if (!parse_elf(&file))
 	{
 		fprintf(stdout, "pas fou\n");
 		exit(EXIT_FAILURE);

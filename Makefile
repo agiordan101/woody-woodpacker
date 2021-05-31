@@ -28,7 +28,10 @@ BIN_PATH	=	./bins/
 
 SRC			=	main.c		\
 				parse.c		\
-				debug.c		\
+				elf.c		\
+				segment.c	\
+				section.c	\
+				bytecode.c	\
 
 ASM_SRC		=	unpack.s	\
 
