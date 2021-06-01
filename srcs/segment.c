@@ -9,20 +9,29 @@ elf_phdr    *parse_64phdr(t_file *file)
     return phdr;
 }
 
-// void        add_phdr(t_file *file)
-// {
-//     /*
-//         alller jusqua la fin des headers
-//         verifier si ya lespace deja libre
-//             overwrite
-//         sinon
-//             copy de tout ce qui avant str
-//             ajouter le bytecode
-//             copy de tout ce qui apres
+elf_phdr    *get_last_pt_load(t_file *file)
+{
+    elf_phdr *phdr;
+    elf_phdr *last_pt_load;
+    
+    last_pt_load = NULL;
+    phdr = file->phdr;
+    for (Elf64_Half i = 0; i < file->ehdr->e_phnum; i++)
+    {
+        if (phdr->p_type == PT_LOAD)
+            last_pt_load = phdr;
+        phdr++;
+    }
+    return last_pt_load;
+}
 
-//     */
-// }
+void        add_phdr(t_file *file)
+{
+    elf_phdr *last_pt_load;
 
+    last_pt_load = get_last_pt_load(file);
+
+}
 // void        
 
 void    print_64phdr(t_file *file)

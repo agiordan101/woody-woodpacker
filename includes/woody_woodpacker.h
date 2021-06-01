@@ -18,7 +18,7 @@ typedef Elf64_Ehdr elf_ehdr;
 typedef Elf64_Phdr elf_phdr;
 typedef Elf64_Shdr elf_shdr;
 
-typedef struct  s_file
+typedef struct      s_file
 {
     char            *mapped_file;
     char            *bytecode;
@@ -27,13 +27,22 @@ typedef struct  s_file
     elf_shdr        *shdr;
     Elf64_Off       b_offset;
     Elf64_Off       b_filesz;
-}               t_file;
+    char            *payload;
+    elf_phdr        *payload_phdr;
+    Elf64_Off       payload_filesz;
+    Elf64_Off       size;
+}                   t_file;
+
+
 
 int         parse_elf(t_file *file);
 elf_ehdr    *parse_64ehdr(t_file *file);
 elf_phdr    *parse_64phdr(t_file *file);
 elf_shdr    *parse_64shdr(t_file *file);
 int         parse_bytecode(t_file *file);
+
+char    *empty_bytecode_space(t_file *file, Elf64_Off payload_size);
+
 
 void    print_64ehdr(t_file *file);
 void    print_64phdr(t_file *file);
