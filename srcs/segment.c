@@ -23,6 +23,7 @@ elf_phdr    *get_first_pt_load(t_file *file)
     return NULL;
 }
 
+
 elf_phdr    *get_last_pt_load(t_file *file)
 {
     elf_phdr *phdr;
@@ -37,6 +38,40 @@ elf_phdr    *get_last_pt_load(t_file *file)
         phdr++;
     }
     return last_pt_load;
+}
+
+Elf64_Off   get_phdr_end_offset_aligned(elf_phdr *phdr)
+{
+    return ALIGN16(phdr->p_offset + phdr->p_filesz);
+}
+
+elf_phdr    *find_unused_pt_load_space(t_file *file, Elf64_Off size)
+{
+    elf_phdr    *phdr;
+    elf_phdr    *next;
+    Elf64_Off   end_offset_aligned;
+
+
+    phdr = file->phdr;
+    for (Elf64_Half i = 0; i < file->ehdr->e_phnum - 1; i++)
+    {
+        if (phdr->p_type == PT_LOAD)
+        {
+            next = phdr + 1;
+
+            end_offset_aligned = get_phdr_end_offset_aligned(phdr);
+            fprintf(stderr, "get_align %lx filesz %lx test 18 %ld\n", GET_ALIGN16(phdr->p_offset + phdr->p_filesz), phdr->p_filesz, ALIGN16(122147483697));
+            fprintf(stderr, "startoff %lx end off %lx next_off %lx size %lx\n",phdr->p_offset, end_offset_aligned, next->p_offset, size);
+            if (next->p_offset - end_offset_aligned >= size)
+                return phdr;
+
+        }
+        phdr++;
+    }
+
+    fprintf(stderr, "no suffisant padding size in pt loads => exit\n");
+    exit(EXIT_FAILURE);
+    return NULL;
 }
 
 int     update_phdr(t_file *file)

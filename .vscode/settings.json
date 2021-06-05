@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "woody_woodpacker.h": "c",
-        "test.C": "cpp"
+        "test.C": "c",
+        "elf.h": "c"
     }
 }

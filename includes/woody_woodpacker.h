@@ -14,9 +14,16 @@
 
 # define USAGE "./woody_woodpacker <file_to_pack>"
 
+# define GET_ALIGN16(x) ((x) % 16 ? 16 - (x) % 16 : 0)
+# define ALIGN16(x) ((x) + GET_ALIGN16((x)))
+
 typedef Elf64_Ehdr elf_ehdr;
 typedef Elf64_Phdr elf_phdr;
 typedef Elf64_Shdr elf_shdr;
+
+extern unsigned int g_payload_len;
+extern unsigned int g_payload_offset;
+extern unsigned int g_payload_jmp_offset;
 
 typedef struct      s_file
 {
@@ -31,6 +38,7 @@ typedef struct      s_file
     char            *payload;
     elf_phdr        payload_phdr;
     Elf64_Off       payload_filesz;
+    Elf64_Addr      payload_entry;
     Elf64_Off       size;
 }                   t_file;
 
@@ -44,6 +52,10 @@ int         parse_bytecode(t_file *file);
 
 elf_phdr    *get_last_pt_load(t_file *file);
 char    *empty_bytecode_space(t_file *file, Elf64_Off payload_size);
+
+elf_phdr    *find_unused_pt_load_space(t_file *file, Elf64_Off size);
+Elf64_Off   get_phdr_end_offset_aligned(elf_phdr *phdr);
+
 int     setup_payload(t_file *file);
 
 int         update_ehdr(t_file *file);
@@ -52,5 +64,7 @@ int     update_phdr(t_file *file);
 void    print_64ehdr(t_file *file);
 void    print_64phdr(t_file *file);
 void    print_64shdr(t_file *file);
+
+void    payload();
 
 #endif

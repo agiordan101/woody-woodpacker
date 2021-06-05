@@ -17,8 +17,8 @@ NAME		=	woody_woodpacker
 
 CC			=	gcc
 NASM		= 	nasm
-CFLAGS		=	-fPIC -Wall -Werror -Wextra -O3
-SFLAGS		=	-f elf64 -O3
+CFLAGS		=	-Wall -Werror -Wextra
+SFLAGS		=	-f elf64
 INC_DIR		=	./includes/
 INCLUDES	=	woody_woodpacker.h
 
@@ -34,11 +34,12 @@ SRC			=	main.c		\
 				bytecode.c	\
 				payload.c	\
 
-ASM_SRC		=	unpack.s	\
+ASM_SRC		=	payload_asm.s	\
 
 BIN			=	$(SRC:.c=.o)
 ASM_BIN		=	$(ASM_SRC:.s=.o)
 
+SRCS		=	$(addprefix $(SRC_PATH), $(SRC))
 BINS		=	$(addprefix $(BIN_PATH), $(BIN))
 ASM_BINS	=	$(addprefix $(BIN_PATH), $(ASM_BIN))
 INCS		=	$(addprefix $(INC_DIR), $(INCLUDES))
@@ -56,20 +57,20 @@ N			=	\33[0m
 
 all: $(NAME)
 
-$(NAME): $(BINS) # $(ASM_BINS)
-	@$(CC) $(CFLAGS) -o $@ $^ -I $(INC_DIR)
+$(NAME): $(BINS) $(ASM_BINS)
+	@$(CC) $(CFLAGS) -I $(INC_DIR) -o $@ $^ 
 	@echo "\n\n$(B)[EXECUTABLE \"$(NAME)\" READY]\n"
 
 
 $(BIN_PATH)%.o: $(SRC_PATH)%.c $(INCS)
 
 	@mkdir -p $(BIN_PATH) || true
-	@$(CC) $(CFLAGS) -I $(INC_DIR) -o $@ -c $< && echo "${G} \c"
+	@$(CC) $(CFLAGS) -I $(INC_DIR) -c -o $@ $< && echo "${G} \c"
 
 $(BIN_PATH)%.o: $(SRC_PATH)%.s $(INCS)
 
 	@mkdir -p $(BIN_PATH) || true
-	@$(NASM) $(SFLAGS) -I $(INC_DIR) -o $@ $< && echo "${G} \c"
+	@$(NASM) $(SFLAGS) $< -o $@ && echo "${G} \c"
 
 clean:
 
