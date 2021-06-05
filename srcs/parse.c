@@ -37,5 +37,5 @@ int     parse_elf(t_file *file)
     print_64ehdr(file);
     print_64phdr(file);
     print_64shdr(file);
-    return 0;
+    return 1;
 }

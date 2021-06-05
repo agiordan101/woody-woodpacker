@@ -32,6 +32,7 @@ SRC			=	main.c		\
 				segment.c	\
 				section.c	\
 				bytecode.c	\
+				payload.c	\
 
 ASM_SRC		=	unpack.s	\
 

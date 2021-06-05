@@ -9,6 +9,20 @@ elf_phdr    *parse_64phdr(t_file *file)
     return phdr;
 }
 
+elf_phdr    *get_first_pt_load(t_file *file)
+{
+    elf_phdr *phdr;
+    
+    phdr = file->phdr;
+    for (Elf64_Half i = 0; i < file->ehdr->e_phnum; i++)
+    {
+        if (phdr->p_type == PT_LOAD)
+            return phdr;
+        phdr++;
+    }
+    return NULL;
+}
+
 elf_phdr    *get_last_pt_load(t_file *file)
 {
     elf_phdr *phdr;
@@ -25,14 +39,34 @@ elf_phdr    *get_last_pt_load(t_file *file)
     return last_pt_load;
 }
 
-void        add_phdr(t_file *file)
+int     update_phdr(t_file *file)
 {
-    elf_phdr *last_pt_load;
+    // elf_phdr    *phdr;
+    elf_phdr    *first_pt_load;
+    Elf64_Off   first_pt_load_offend;
 
-    last_pt_load = get_last_pt_load(file);
+    // PHDR segment update
+    // phdr = file->phdr;
 
+    // if (phdr->p_type != PT_PHDR)
+    //     printf("First phdr is not a PT_PHDR\n"), exit(EXIT_FAILURE);
+
+    // phdr->p_memsz += file->ehdr->e_phentsize;
+    // phdr->p_filesz += file->ehdr->e_phentsize;
+
+    // First PT_LOAD segment update
+    first_pt_load = get_first_pt_load(file);
+    first_pt_load_offend = first_pt_load->p_offset + first_pt_load->p_filesz;
+
+    if (first_pt_load_offend + file->ehdr->e_phentsize > (first_pt_load + 1)->p_offset)
+        printf("No space left in first PT_LOAD segment\n"), exit(EXIT_FAILURE);
+
+    first_pt_load->p_memsz += file->ehdr->e_phentsize;
+    first_pt_load->p_filesz += file->ehdr->e_phentsize;
+    return 1;
 }
-// void        
+
+
 
 void    print_64phdr(t_file *file)
 {

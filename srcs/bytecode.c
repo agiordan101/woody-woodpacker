@@ -17,10 +17,6 @@ int     parse_bytecode(t_file *file)
     return 0;
 }
 
-
-
-
-
 // char    *empty_bytecode_space(t_file *file, Elf64_Off payload_size)
 // {
 //     elf_phdr *phdr;
